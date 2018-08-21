@@ -70,11 +70,17 @@ class VideoThumbGenerator implements VideoThumbGeneratorInterface
 
         // TIME params are separated from the rest, so we can inject them
         // before input file
-        $timeParams = (new VideoConvertParams())->withSeekStart(
+        // Comment this until I find out how to get it work with JPG input file
+		/*$timeParams = (new VideoConvertParams())->withSeekStart(
             $thumbParams->getParam(VideoThumbParamsInterface::PARAM_SEEK_TIME)
+        ); */
+		
+		$conversionParams = (new VideoConvertParams());
+		
+		$conversionParams = $conversionParams->withSeekStart(
+			$thumbParams->getParam(VideoThumbParamsInterface::PARAM_SEEK_TIME)
         );
-
-        $conversionParams = (new VideoConvertParams());
+		
 
         if ($adapter->getDefaultThreads() !== null) {
             $conversionParams->withThreads($adapter->getDefaultThreads());
@@ -104,8 +110,7 @@ class VideoThumbGenerator implements VideoThumbGeneratorInterface
         $ffmpegCmd = $adapter->getCliCommand(
             $arguments,
             $videoFile,
-            $thumbnailFile,
-            $adapter->getMappedConversionParams($timeParams)
+            $thumbnailFile
         );
 
         $pp = $processParams ?? $this->ffmpegConfig->getProcessParams();
